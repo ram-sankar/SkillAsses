@@ -1,0 +1,11 @@
+
+
+.home-btn {
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.home-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 20px rgba(123, 52, 221, 0.3);
+}
