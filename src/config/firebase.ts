@@ -13,6 +13,11 @@ const firebaseConfig = {
   measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
 };
 
+export const TABLES = {
+  USERS: "users",
+  TESTS: "tests",
+};
+
 const app = initializeApp(firebaseConfig);
 
 export const auth = getAuth(app);

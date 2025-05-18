@@ -5,7 +5,7 @@ import {
   signOut,
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../config/firebase";
+import { auth, db, TABLES } from "../config/firebase";
 import { UserType } from "common/models/User";
 
 export const registerUser = async (
@@ -23,7 +23,7 @@ export const registerUser = async (
     const user = userCredential.user;
 
     // Store additional info in Firestore
-    await setDoc(doc(db, "users", user.uid), {
+    await setDoc(doc(db, TABLES.USERS, user.uid), {
       uid: user.uid,
       email,
       username,
