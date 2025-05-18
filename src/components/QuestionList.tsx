@@ -13,7 +13,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import SaveIcon from "@mui/icons-material/Save";
 import { useState } from "react";
-import { Question } from "../constants/models/Question";
+import { Question, QuestionType } from "../common/models/Question";
 
 interface QuestionListProps {
   questions: Question[];
@@ -23,16 +23,20 @@ interface QuestionListProps {
 
 const QuestionList = ({ questions, onUpdate, onDelete }: QuestionListProps) => {
   const [editingId, setEditingId] = useState<number | null>(null);
+  const [questionType, setQuestionType] = useState<QuestionType>(
+    QuestionType.CODE,
+  );
   const [editingText, setEditingText] = useState("");
 
-  const startEditing = (id: number, text: string) => {
+  const startEditing = (id: number, text: string, quesType: QuestionType) => {
     setEditingId(id);
     setEditingText(text);
+    setQuestionType(quesType);
   };
 
   const saveEdit = () => {
     if (editingId !== null) {
-      onUpdate({ id: editingId, text: editingText });
+      onUpdate({ id: editingId, text: editingText, type: questionType });
       setEditingId(null);
       setEditingText("");
     }
@@ -73,7 +77,7 @@ const QuestionList = ({ questions, onUpdate, onDelete }: QuestionListProps) => {
               </Typography>
               <Box className="card-actions">
                 <IconButton
-                  onClick={() => startEditing(q.id, q.text)}
+                  onClick={() => startEditing(q.id, q.text, q.type)}
                   color="primary"
                 >
                   <EditIcon />

@@ -2,7 +2,7 @@ import { Alert, CircularProgress } from "@mui/material";
 import Button from "components/Button";
 import CustomInput from "components/Form/CustomInput";
 import TopBar from "components/TopBar";
-import { UserType } from "constants/models/User";
+import { UserType } from "common/models/User";
 import { useFormik } from "formik";
 import "pages/styles/Login.scss";
 import { useEffect, useState } from "react";

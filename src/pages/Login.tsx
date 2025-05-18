@@ -1,7 +1,7 @@
 import { CircularProgress, TextField } from "@mui/material";
 import Button from "components/Button";
 import TopBar from "components/TopBar";
-import { UserType } from "constants/models/User";
+import { UserType } from "common/models/User";
 import "pages/styles/Login.scss";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";

@@ -6,7 +6,7 @@ import {
 } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../config/firebase";
-import { UserType } from "constants/models/User";
+import { UserType } from "common/models/User";
 
 export const registerUser = async (
   email: string,

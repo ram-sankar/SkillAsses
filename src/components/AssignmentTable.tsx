@@ -10,7 +10,7 @@ import {
   Box,
   Button,
 } from "@mui/material";
-import { Assignment } from "../constants/models/Assignment";
+import { Assignment } from "../common/models/Assignment";
 import "./styles/AssignmentTable.scss";
 
 interface AssignmentTableProps {

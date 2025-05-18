@@ -1,7 +1,7 @@
 import { List } from "@mui/icons-material";
 import { Box, ListItem, ListItemButton, ListItemText } from "@mui/material";
 import "components/styles/TopBar.scss";
-import { UserType } from "constants/models/User";
+import { UserType } from "common/models/User";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getUserDetails, isLoggedIn, logoutUser } from "services/authService";

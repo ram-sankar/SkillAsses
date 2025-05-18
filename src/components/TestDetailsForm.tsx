@@ -7,6 +7,7 @@ import {
   Box,
   Grid,
 } from "@mui/material";
+import { QuestionType } from "common/models/Question";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "./Button";
@@ -22,17 +23,16 @@ export interface TestFormValues {
   topic: string;
   candidateLevel: string;
   difficulty: string;
-  questionType: string;
+  questionType: QuestionType;
   testDuration: string;
   numQuestions: string;
-  tags: string;
 }
 
 const candidateLevels = ["Fresher", "2-4 YOE", "4-8 YOE", "8+ YOE"];
 const difficultyLevels = ["Easy", "Medium", "Hard"];
 const questionTypes = [
-  { text: "Text Answer", value: "text" },
-  { text: "Coding Problem", value: "coding" },
+  { text: "Text Answer", value: QuestionType.TEXT },
+  { text: "Coding Problem", value: QuestionType.CODE },
   { text: "Both", value: "both" },
 ];
 
@@ -43,7 +43,6 @@ const validationSchema = Yup.object({
   questionType: Yup.string().required("Required"),
   testDuration: Yup.number().min(1, "Must be > 0").required("Required"),
   numQuestions: Yup.number().min(1, "At least 1").required("Required"),
-  tags: Yup.string(),
 });
 
 const TestDetailsForm = ({
@@ -54,12 +53,11 @@ const TestDetailsForm = ({
   const formik = useFormik<TestFormValues>({
     initialValues: initialValues || {
       topic: "",
-      candidateLevel: "",
-      difficulty: "",
-      questionType: "",
-      testDuration: "",
-      numQuestions: "",
-      tags: "",
+      candidateLevel: candidateLevels[0],
+      difficulty: difficultyLevels[0],
+      questionType: QuestionType.TEXT,
+      testDuration: "10",
+      numQuestions: "10",
     },
     validationSchema,
     onSubmit,
@@ -217,18 +215,6 @@ const TestDetailsForm = ({
           />
         </Grid>
       </Grid>
-
-      <TextField
-        label="Tags (comma separated)"
-        name="tags"
-        value={formik.values.tags}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.tags && Boolean(formik.errors.tags)}
-        helperText={formik.touched.tags && formik.errors.tags}
-        fullWidth
-        margin="normal"
-      />
 
       <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
         <Button

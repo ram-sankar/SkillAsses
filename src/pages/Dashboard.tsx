@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { isLoggedIn, getUserDetails } from "../services/authService";
-import { UserType } from "../constants/models/User";
+import { UserType } from "../common/models/User";
 import { Container, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import TopBar from "components/TopBar";

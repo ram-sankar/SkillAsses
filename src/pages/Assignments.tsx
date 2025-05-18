@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Assignment } from "../constants/models/Assignment";
+import { Assignment } from "../common/models/Assignment";
 import AssignmentTable from "../components/AssignmentTable";
 import TopBar from "../components/TopBar";
 import "./styles/Assignments.scss";
