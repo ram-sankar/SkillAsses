@@ -1,0 +1,17 @@
+.dashboardContainer {
+    padding-top: 32px;
+    padding-bottom: 40px;
+
+    .summaryGrid {
+        margin-bottom: 24px;
+    }
+
+    .assignmentSection {
+        margin-top: 32px;
+    }
+}
+
+.MuiPaper-root {
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}

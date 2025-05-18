@@ -5,6 +5,7 @@ import NotFound from "../pages/NotFound";
 import LoginNavigator from "pages/LoginNavigator";
 import Login from "pages/Login";
 import Dashboard from "pages/Dashboard";
+import Assignments from "pages/Assignments";
 // import Dashboard from "pages/Dashboard";
 
 const routes = createBrowserRouter([
@@ -23,6 +24,10 @@ const routes = createBrowserRouter([
   {
     path: "/dashboard",
     element: <Dashboard />,
+  },
+  {
+    path: "/:userType/assignments",
+    element: <Assignments />,
   },
   {
     path: "*",
