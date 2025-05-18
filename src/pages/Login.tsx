@@ -1,71 +1,154 @@
-import { TextField } from "@mui/material";
+import { CircularProgress, TextField } from "@mui/material";
 import Button from "components/Button";
 import TopBar from "components/TopBar";
 import { UserType } from "constants/models/User";
-import "pages/styles/Login.scss"
+import "pages/styles/Login.scss";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { loginUser } from "services/authService"; //Import loginUser
+import * as Yup from "yup";
+import { useFormik } from "formik";
+import { Alert } from "@mui/material";
+import CustomInput from "components/Form/CustomInput";
 
-interface Props {
-    
+interface Props {}
+
+interface FormValues {
+  email: string;
+  password: string;
 }
 
-export default function Login (props: Props) {
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [userType, setUserType] = useState<UserType>(UserType.DEVELOPER);
-    
-    useEffect(() => {
-        const queryParams = new URLSearchParams(location.search);
-        const user = queryParams.get('user');
+export default function Login(props: Props) {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [userType, setUserType] = useState<UserType>(UserType.DEVELOPER);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-        if (user === UserType.RECRUITER) {
-            setUserType(UserType.RECRUITER)
-        }
-    }, [])
+  useEffect(() => {
+    const queryParams = new URLSearchParams(location.search);
+    const user = queryParams.get("user");
+    const emailParam = queryParams.get("email");
 
-    const handleDeveloperLoginClick = () => {
-
+    if (user === UserType.RECRUITER) {
+      setUserType(UserType.RECRUITER);
     }
-
-    const navigateToRegisterPage = () => {
-        navigate(`/register?user=${userType}`)
+    if (emailParam) {
+      formik.setValues({ ...formik.values, email: emailParam }); // Pre-populate email
     }
+  }, []);
 
-    const switchUserType = () => {
-        const newUserType = userType === UserType.DEVELOPER ? UserType.RECRUITER : UserType.DEVELOPER
-        setUserType(newUserType)
-        navigate(`?user=${newUserType}`, { replace: true });
+  const handleLogin = async (values: FormValues) => {
+    setIsLoading(true);
+    setErrorMessage(null);
+    try {
+      const user = await loginUser(values.email, values.password);
+      if (user) {
+        navigate("/dashboard");
+      } else {
+        setErrorMessage("Login failed. Invalid credentials.");
+      }
+    } catch (error: any) {
+      if (error.code === "auth/invalid-credential") {
+        setErrorMessage("Invalid credentials.");
+      } else {
+        setErrorMessage(error.message);
+      }
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    return (
-        <>
-            <TopBar />
-            <div className="login-container">
-                <div className="login-section">
-                    <div className="login-section-content">
-                        <h2>{userType} Login</h2>
+  const formik = useFormik<FormValues>({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Invalid email address").required("Required"),
+      password: Yup.string().required("Required"),
+    }),
+    onSubmit: handleLogin,
+  });
 
-                        <form className="login-form">
-                            <div className="form-group">
-                                <TextField id="filled-basic" label="Enter mail ID" variant="outlined" fullWidth />
-                            </div>
-                            <div className="form-group">
-                                <TextField id="filled-basic" label="Enter password" variant="outlined" fullWidth />
-                            </div>
-                            <Button onClick={() => navigate("/login?user=recruiter")} size="xl">
-                                Login
-                            </Button>
-                            <p className="account-text">
-                                Don't have an account? <span className="btn" onClick={navigateToRegisterPage}>Register</span>.<br/><br/>
-                                <span className="btn" onClick={switchUserType}>
-                                    Switch to {userType === UserType.DEVELOPER ? UserType.RECRUITER : UserType.DEVELOPER} login
-                                </span>
-                            </p>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </>
-    )
+  const navigateToRegisterPage = () => {
+    navigate(`/register?user=${userType}`);
+  };
+
+  const switchUserType = () => {
+    const newUserType =
+      userType === UserType.DEVELOPER ? UserType.RECRUITER : UserType.DEVELOPER;
+    setUserType(newUserType);
+    navigate(`?user=${newUserType}`, { replace: true });
+  };
+
+  return (
+    <>
+      <TopBar />
+      <div className="login-container">
+        <div className="login-section">
+          <div className="login-section-content">
+            <h2>{userType} Login</h2>
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+            <form className="login-form" onSubmit={formik.handleSubmit}>
+              <div className="form-group">
+                <CustomInput //Assuming you have this component
+                  id="email"
+                  label="Enter mail ID"
+                  variant="outlined"
+                  fullWidth
+                  {...formik.getFieldProps("email")}
+                  errorMessage={
+                    formik.touched.email && formik.errors.email
+                      ? formik.errors.email
+                      : null
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <CustomInput //Assuming you have this component
+                  id="password"
+                  label="Enter password"
+                  variant="outlined"
+                  fullWidth
+                  type="password"
+                  {...formik.getFieldProps("password")}
+                  errorMessage={
+                    formik.touched.password && formik.errors.password
+                      ? formik.errors.password
+                      : null
+                  }
+                />
+              </div>
+              <Button type="submit" size="xl" disabled={isLoading}>
+                {isLoading ? (
+                  <>
+                    <CircularProgress size={20} thickness={4} />
+                    <span pl-4>Logging in...</span>
+                  </>
+                ) : (
+                  "Login"
+                )}
+              </Button>
+              <p className="account-text">
+                Don't have an account?{" "}
+                <span className="btn" onClick={navigateToRegisterPage}>
+                  Register
+                </span>
+                .<br />
+                <br />
+                <span className="btn" onClick={switchUserType}>
+                  Switch to{" "}
+                  {userType === UserType.DEVELOPER
+                    ? UserType.RECRUITER
+                    : UserType.DEVELOPER}{" "}
+                  login
+                </span>
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </>
+  );
 }
