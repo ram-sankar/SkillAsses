@@ -1,0 +1,33 @@
+.testCreationPage {
+    padding-top: 20px;
+    padding-bottom: 30px;
+
+    .pageTitle {
+        font-weight: 600;
+        color: #4a148c;
+        margin-bottom: 24px;
+        text-align: center;
+    }
+
+    .sectionTitle {
+        font-weight: 500;
+        color: #4a148c;
+        margin-bottom: 12px;
+        text-align: center;
+    }
+
+    .questionList {
+        margin-top: 12px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+        .MuiListItem-root {
+            border-bottom: 1px solid #f0f0f0;
+
+            &:last-child {
+                border-bottom: none;
+            }
+        }
+    }
+}

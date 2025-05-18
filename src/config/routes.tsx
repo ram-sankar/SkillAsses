@@ -6,7 +6,7 @@ import LoginNavigator from "pages/LoginNavigator";
 import Login from "pages/Login";
 import Dashboard from "pages/Dashboard";
 import Assignments from "pages/Assignments";
-// import Dashboard from "pages/Dashboard";
+import TestCreation from "pages/TestCreation";
 
 const routes = createBrowserRouter([
   {
@@ -28,6 +28,10 @@ const routes = createBrowserRouter([
   {
     path: "/:userType/assignments",
     element: <Assignments />,
+  },
+  {
+    path: "/recruiter/test-creation",
+    element: <TestCreation />,
   },
   {
     path: "*",

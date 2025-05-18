@@ -55,13 +55,13 @@ export default function TopBar(props: Props) {
   };
 
   const renderSignUp = () => (
-    <Button onClick={handleOnSignUpClick} size={"md"}>
+    <Button onClick={handleOnSignUpClick} size={"md"} outline>
       Sign up
     </Button>
   );
 
   const renderLogout = () => (
-    <Button onClick={handleLogout} size={"md"}>
+    <Button onClick={handleLogout} size={"md"} outline>
       Logout
     </Button>
   );

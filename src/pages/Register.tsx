@@ -31,7 +31,7 @@ export default function Register(props: Props) {
     if (user === UserType.RECRUITER) {
       setUserType(UserType.RECRUITER);
     }
-  }, [location.search]);
+  }, [location.search, navigate]);
 
   const handleFormSubmit = async (values: FormElements) => {
     setIsLoading(true);
