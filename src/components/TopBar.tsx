@@ -1,32 +1,76 @@
-import "components/styles/TopBar.scss"
-import Button from "./Button"
+import { List } from "@mui/icons-material";
+import { Box, ListItem, ListItemButton, ListItemText } from "@mui/material";
+import "components/styles/TopBar.scss";
+import { UserType } from "constants/models/User";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { getUserDetails, isLoggedIn, logoutUser } from "services/authService";
+import Button from "./Button";
 
-interface Props {
-    
-}
+interface Props {}
 
-export default function TopBar (props: Props) {
+export default function TopBar(props: Props) {
+  const navigate = useNavigate();
+  const [userType, setUserType] = useState<UserType | null>(null);
 
-    const handleOnSignUpClick = () => {
+  useEffect(() => {
+    const userDetails = getUserDetails();
+    setUserType(userDetails.userType);
+  }, []);
 
+  const renderNavigation = () => {
+    if (userType === UserType.RECRUITER) {
+      return (
+        <ul className="nav-links">
+          <ListItemButton component="a" href="/recruiter/assignments">
+            <ListItemText>Assignments</ListItemText>
+          </ListItemButton>
+          <ListItemButton component="a" href="/recruiter/test-creation">
+            <ListItemText>Test Creation</ListItemText>
+          </ListItemButton>
+          <ListItemButton component="a" href="/recruiter/user-management">
+            <ListItemText>User Management</ListItemText>
+          </ListItemButton>
+        </ul>
+      );
+    } else if (userType === UserType.CANDIDATE) {
+      return (
+        <ul className="nav-links">
+          <ListItemButton component="a" href="/candidate/assignments">
+            <ListItemText>Assignment List</ListItemText>
+          </ListItemButton>
+        </ul>
+      );
     }
+    return null;
+  };
 
-    return (
-        <header>
-            <nav className="navbar">
-                <div className="logo">SkillAssess</div>
-                <ul className="nav-links">
-                    {/* <li><a href="#">Products</a></li>
-                    <li><a href="#">Solutions</a></li>
-                    <li><a href="#">Resources</a></li>
-                    <li><a href="#">Pricing</a></li> */}
-                </ul>
-                <div className="nav-buttons">
-                    <Button onClick={handleOnSignUpClick} size={"md"}>
-                        Sign up
-                    </Button>
-                </div>
-            </nav>
-        </header>
-    )
+  const handleOnSignUpClick = () => {
+    navigate("/login");
+  };
+
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate("/login");
+  };
+
+  const renderSignUp = () => (
+    <Button onClick={handleOnSignUpClick} size={"md"}>
+      Sign up
+    </Button>
+  );
+
+  const renderLogout = () => (
+    <Button onClick={handleLogout} size={"md"}>
+      Logout
+    </Button>
+  );
+
+  return (
+    <nav className="navbar">
+      <div className="logo">SkillAssess ({userType})</div>
+      <Box>{renderNavigation()}</Box>
+      {isLoggedIn() ? renderLogout() : renderSignUp()}
+    </nav>
+  );
 }

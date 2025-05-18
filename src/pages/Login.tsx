@@ -5,7 +5,7 @@ import { UserType } from "constants/models/User";
 import "pages/styles/Login.scss";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { loginUser } from "services/authService"; //Import loginUser
+import { isLoggedIn, loginUser } from "services/authService";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Alert } from "@mui/material";
@@ -21,7 +21,7 @@ interface FormValues {
 export default function Login(props: Props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [userType, setUserType] = useState<UserType>(UserType.DEVELOPER);
+  const [userType, setUserType] = useState<UserType>(UserType.CANDIDATE);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -29,6 +29,11 @@ export default function Login(props: Props) {
     const queryParams = new URLSearchParams(location.search);
     const user = queryParams.get("user");
     const emailParam = queryParams.get("email");
+
+    if (isLoggedIn()) {
+      navigate("/dashboard");
+      return;
+    }
 
     if (user === UserType.RECRUITER) {
       setUserType(UserType.RECRUITER);
@@ -42,8 +47,8 @@ export default function Login(props: Props) {
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      const user = await loginUser(values.email, values.password);
-      if (user) {
+      const response = await loginUser(values.email, values.password, userType);
+      if (response.user && response.idToken) {
         navigate("/dashboard");
       } else {
         setErrorMessage("Login failed. Invalid credentials.");
@@ -77,7 +82,7 @@ export default function Login(props: Props) {
 
   const switchUserType = () => {
     const newUserType =
-      userType === UserType.DEVELOPER ? UserType.RECRUITER : UserType.DEVELOPER;
+      userType === UserType.CANDIDATE ? UserType.RECRUITER : UserType.CANDIDATE;
     setUserType(newUserType);
     navigate(`?user=${newUserType}`, { replace: true });
   };
@@ -139,9 +144,9 @@ export default function Login(props: Props) {
                 <br />
                 <span className="btn" onClick={switchUserType}>
                   Switch to{" "}
-                  {userType === UserType.DEVELOPER
+                  {userType === UserType.CANDIDATE
                     ? UserType.RECRUITER
-                    : UserType.DEVELOPER}{" "}
+                    : UserType.CANDIDATE}{" "}
                   login
                 </span>
               </p>

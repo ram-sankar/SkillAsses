@@ -7,7 +7,7 @@ import { useFormik } from "formik";
 import "pages/styles/Login.scss";
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import { registerUser } from "services/authService";
+import { isLoggedIn, registerUser } from "services/authService";
 import * as Yup from "yup";
 
 interface Props {}
@@ -15,13 +15,18 @@ interface Props {}
 export default function Register(props: Props) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [userType, setUserType] = useState<UserType>(UserType.DEVELOPER);
+  const [userType, setUserType] = useState<UserType>(UserType.CANDIDATE);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
     const user = queryParams.get("user");
+
+    if (isLoggedIn()) {
+      navigate("/dashboard");
+      return;
+    }
 
     if (user === UserType.RECRUITER) {
       setUserType(UserType.RECRUITER);
@@ -55,7 +60,7 @@ export default function Register(props: Props) {
 
   const switchUserType = () => {
     const newUserType =
-      userType === UserType.DEVELOPER ? UserType.RECRUITER : UserType.DEVELOPER;
+      userType === UserType.CANDIDATE ? UserType.RECRUITER : UserType.CANDIDATE;
     setUserType(newUserType);
     navigate(`?user=${newUserType}`, { replace: true });
   };
@@ -153,9 +158,9 @@ export default function Register(props: Props) {
                 <br />
                 <span className="btn" onClick={switchUserType}>
                   Register as{" "}
-                  {userType === UserType.DEVELOPER
+                  {userType === UserType.CANDIDATE
                     ? UserType.RECRUITER
-                    : UserType.DEVELOPER}
+                    : UserType.CANDIDATE}
                 </span>
               </p>
             </form>
