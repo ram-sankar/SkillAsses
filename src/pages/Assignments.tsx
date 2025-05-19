@@ -1,6 +1,7 @@
+import { assignmentColumns } from "common/constants";
+import TableComponent from "components/TableComponent";
 import { useState, useEffect } from "react";
 import { Assignment } from "../common/models/Assignment";
-import AssignmentTable from "../components/AssignmentTable";
 import TopBar from "../components/TopBar";
 import "./styles/Assignments.scss";
 
@@ -39,7 +40,12 @@ const Assignments = () => {
     <>
       <TopBar />
       <div className="assignment-container">
-        <AssignmentTable assignments={assignmentsData} />
+        <TableComponent
+          data={assignments}
+          columns={assignmentColumns}
+          title="Recent Assignments Overview"
+          subtitle="Monitor candidate progress and upcoming deadlines"
+        />
       </div>
     </>
   );

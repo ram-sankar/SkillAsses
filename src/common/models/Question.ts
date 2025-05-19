@@ -9,3 +9,14 @@ export enum QuestionType {
   TEXT = "text",
   MIXED = "both",
 }
+
+export interface TestData {
+  id: string;
+  questions: Question[];
+  difficulty: string;
+  candidateLevel: string;
+  testDuration: string;
+  topic: string;
+  numQuestions: string;
+  questionType: QuestionType;
+}

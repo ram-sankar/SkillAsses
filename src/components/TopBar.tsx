@@ -22,14 +22,14 @@ export default function TopBar(props: Props) {
     if (userType === UserType.RECRUITER) {
       return (
         <ul className="nav-links">
-          <ListItemButton component="a" href="/recruiter/assignments">
-            <ListItemText>Assignments</ListItemText>
+          <ListItemButton component="a" href="/recruiter/assigned-test">
+            <ListItemText>Assigned Tests</ListItemText>
           </ListItemButton>
-          <ListItemButton component="a" href="/recruiter/test-creation">
-            <ListItemText>Test Creation</ListItemText>
+          <ListItemButton component="a" href="/recruiter/test-library">
+            <ListItemText>Test Library</ListItemText>
           </ListItemButton>
-          <ListItemButton component="a" href="/recruiter/user-management">
-            <ListItemText>User Management</ListItemText>
+          <ListItemButton component="a" href="/recruiter/candidates">
+            <ListItemText>Candidates</ListItemText>
           </ListItemButton>
         </ul>
       );

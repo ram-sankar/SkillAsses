@@ -6,6 +6,8 @@ import {
   updateDoc,
   arrayUnion,
   setDoc,
+  getDocs,
+  FirestoreError,
 } from "firebase/firestore";
 import { Question } from "common/models/Question";
 import { TestFormValues } from "components/TestDetailsForm";
@@ -36,5 +38,20 @@ export const createTest = async (testDetails: TestFormValues | undefined) => {
   } catch (error: any) {
     console.error("Error creating test:", error);
     return { success: false, error: error.message };
+  }
+};
+
+export const fetchTests = async (): Promise<any[]> => {
+  try {
+    const testsCollectionRef = collection(db, TABLES.TESTS);
+    const testsSnapshot = await getDocs(testsCollectionRef);
+    const tests = testsSnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    return tests;
+  } catch (error) {
+    console.error("Error fetching tests:", error);
+    return []; // Return empty array on error
   }
 };

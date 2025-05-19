@@ -5,8 +5,9 @@ import { Container, Grid } from "@mui/material";
 import { useEffect, useState } from "react";
 import TopBar from "components/TopBar";
 import SummaryCard from "components/SummaryCard";
-import AssignmentTable from "components/AssignmentTable";
 import "./styles/Dashboard.scss";
+import TableComponent from "components/TableComponent";
+import { assignmentColumns } from "common/constants";
 
 const assignments = [
   {
@@ -90,7 +91,12 @@ const Dashboard = () => {
         </Grid>
 
         <div className="assignmentSection">
-          <AssignmentTable assignments={assignments} />
+          <TableComponent
+            data={assignments}
+            columns={assignmentColumns}
+            title="Recent Assignments Overview"
+            subtitle="Monitor candidate progress and upcoming deadlines"
+          />
         </div>
       </Container>
     </>

@@ -7,6 +7,7 @@ import Login from "pages/Login";
 import Dashboard from "pages/Dashboard";
 import Assignments from "pages/Assignments";
 import TestCreation from "pages/TestCreation";
+import TestLibrary from "pages/TestLibrary";
 
 const routes = createBrowserRouter([
   {
@@ -26,11 +27,19 @@ const routes = createBrowserRouter([
     element: <Dashboard />,
   },
   {
-    path: "/:userType/assignments",
+    path: "/:userType/assigned-test",
     element: <Assignments />,
   },
   {
-    path: "/recruiter/test-creation",
+    path: "/recruiter/test-library",
+    element: <TestLibrary />,
+  },
+  {
+    path: "/recruiter/test-library/:testId",
+    element: <TestCreation />,
+  },
+  {
+    path: "/recruiter/candidates",
     element: <TestCreation />,
   },
   {
