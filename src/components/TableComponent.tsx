@@ -10,6 +10,7 @@ import {
   Box,
   Button,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import "./styles/TableComponent.scss";
 
 interface DataItem {
@@ -26,6 +27,7 @@ interface TableComponentProps<T extends DataItem> {
   columns: Column[];
   title: string;
   subtitle?: string;
+  baseUrl?: string;
 }
 
 const TableComponent: React.FC<TableComponentProps<any>> = ({
@@ -33,7 +35,10 @@ const TableComponent: React.FC<TableComponentProps<any>> = ({
   columns,
   title,
   subtitle,
+  baseUrl,
 }) => {
+  const navigate = useNavigate();
+
   const renderTableCell = (item: any, column: Column) => {
     if (column.title === "Status") {
       const cellValue = item[column.field];
@@ -51,6 +56,10 @@ const TableComponent: React.FC<TableComponentProps<any>> = ({
     }
   };
 
+  const handleViewClick = (id: any) => {
+    navigate(`${baseUrl}/${id}`);
+  };
+
   return (
     <Box mt={4} className="genericTable">
       {" "}
@@ -61,22 +70,25 @@ const TableComponent: React.FC<TableComponentProps<any>> = ({
           <TableHead>
             <TableRow>
               {columns.map((column) => (
-                <TableCell>{column.title}</TableCell>
+                <TableCell key={column.title}>{column.title}</TableCell>
               ))}
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((item) => (
-              <TableRow key={item.id}>
-                {" "}
-                {columns.map((column) => (
-                  <TableCell key={column.field || item.id}>
+            {data.map((item, itemIndex) => (
+              <TableRow key={`${item.id}-${itemIndex}`}>
+                {columns.map((column, columnIndex) => (
+                  <TableCell key={`${itemIndex}-${columnIndex}`}>
                     {renderTableCell(item, column)}
                   </TableCell>
                 ))}
                 <TableCell>
-                  <Button variant="outlined" size="small">
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    onClick={() => handleViewClick(item?.id)}
+                  >
                     View
                   </Button>
                 </TableCell>

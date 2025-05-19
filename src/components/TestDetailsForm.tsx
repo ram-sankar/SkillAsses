@@ -12,6 +12,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import Button from "./Button";
 import "./styles/TestDetailsForm.scss";
+import { useEffect } from "react";
 
 interface TestDetailsFormProps {
   onSubmit: (values: TestFormValues) => void;
@@ -51,7 +52,7 @@ const TestDetailsForm = ({
   initialValues,
 }: TestDetailsFormProps) => {
   const formik = useFormik<TestFormValues>({
-    initialValues: initialValues || {
+    initialValues: {
       topic: "",
       candidateLevel: candidateLevels[0],
       difficulty: difficultyLevels[0],
@@ -61,7 +62,14 @@ const TestDetailsForm = ({
     },
     validationSchema,
     onSubmit,
+    enableReinitialize: true,
   });
+
+  useEffect(() => {
+    if (initialValues) {
+      formik.setValues(initialValues);
+    }
+  }, [formik, initialValues]);
 
   return (
     <form onSubmit={formik.handleSubmit} noValidate className="test-form">

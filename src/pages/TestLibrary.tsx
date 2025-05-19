@@ -27,6 +27,7 @@ const TestLibrary = () => {
           columns={testColumns}
           title="Test Library"
           subtitle="Browse the list of tests you’ve created."
+          baseUrl="/recruiter/test-library"
         />
       </div>
     </>

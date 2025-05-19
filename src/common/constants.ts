@@ -13,5 +13,4 @@ export const testColumns = [
   { title: "Question Type", field: "questionType" },
   { title: "Candidate Level", field: "candidateLevel" },
   { title: "Difficulty", field: "difficulty" },
-  { title: "Actions", field: "actions" },
 ];

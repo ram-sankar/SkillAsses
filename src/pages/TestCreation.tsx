@@ -1,14 +1,8 @@
-import {
-  Container,
-  Typography,
-  CircularProgress,
-  Box,
-  Button as MUIButton,
-} from "@mui/material";
-import { useState } from "react";
+import { Container, Typography, CircularProgress, Box } from "@mui/material";
+import { useEffect, useState, useCallback } from "react";
 import TestDetailsForm, { TestFormValues } from "../components/TestDetailsForm";
 import QuestionList from "../components/QuestionList";
-import { Question, QuestionType } from "../common/models/Question";
+import { Question } from "../common/models/Question";
 import "./styles/TestCreation.scss";
 import TopBar from "components/TopBar";
 import {
@@ -16,66 +10,42 @@ import {
   getResponseFromPrompt,
 } from "services/genaiService";
 import Button from "components/Button";
-import { createTest, uploadQuestions } from "services/questionService";
+import {
+  createTest,
+  uploadQuestions,
+  fetchTest,
+} from "services/questionService";
+import { useNavigate, useParams } from "react-router-dom";
 
 const TestCreation = () => {
-  const [loading, setLoading] = useState(false);
-  const [questions, setQuestions] = useState<Question[]>([
-    {
-      id: 1,
-      text: "What is React?",
-      type: QuestionType.TEXT,
-    },
-    {
-      id: 2,
-      text: "What is JSX?",
-      type: QuestionType.TEXT,
-    },
-    {
-      id: 3,
-      text: "What are React components?",
-      type: QuestionType.TEXT,
-    },
-    {
-      id: 4,
-      text: "What is the purpose of the `render()` method in React?",
-      type: QuestionType.TEXT,
-    },
-    {
-      id: 5,
-      text: "What is a React element?",
-      type: QuestionType.TEXT,
-    },
-    {
-      id: 6,
-      text: "What is the difference between a class component and a functional component?",
-      type: QuestionType.TEXT,
-    },
-    {
-      id: 7,
-      text: "What are props in React?",
-      type: QuestionType.TEXT,
-    },
-    {
-      id: 8,
-      text: "What is state in React?",
-      type: QuestionType.TEXT,
-    },
-    {
-      id: 9,
-      text: "How do you update the state of a component in React?",
-      type: QuestionType.TEXT,
-    },
-    {
-      id: 10,
-      text: "What is the purpose of `setState()` in React?",
-      type: QuestionType.TEXT,
-    },
-  ]);
+  const navigate = useNavigate();
+  const { testId } = useParams();
+  const [isQuestionGenerationInProgress, setIsQuestionGenerationInProgress] =
+    useState(false);
+  const [isFormSubmissionInProgress, setIsFormSubmissionInProgress] =
+    useState(false);
+  const [questions, setQuestions] = useState<Question[]>([]);
   const [formValues, setFormValues] = useState<TestFormValues>();
+  const isUpdateMode = !!testId;
 
-  const handleFormSubmit = async (values: TestFormValues) => {
-    setLoading(true);
+  const fetchData = useCallback(async () => {
+    if (testId) {
+      setIsQuestionGenerationInProgress(true);
+      const testData = await fetchTest(testId);
+      if (testData) {
+        setFormValues(testData);
+        setQuestions(testData.questions || []);
+      }
+      setIsQuestionGenerationInProgress(false);
+    }
+  }, [testId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  const handleGenerateQuestion = async (values: TestFormValues) => {
+    setIsQuestionGenerationInProgress(true);
     setQuestions([]);
     setFormValues(values);
 
@@ -89,16 +59,19 @@ const TestCreation = () => {
       text: q.text,
       type: q.type,
     }));
-    console.log(formattedQuestions);
 
     setQuestions(formattedQuestions);
-    setLoading(false);
+    setIsQuestionGenerationInProgress(false);
   };
 
-  const handleCreateTest = async () => {
-    const testCreationResponse = await createTest(formValues);
+  const handleFormSubmission = async () => {
+    setIsFormSubmissionInProgress(true);
+    const testCreationResponse = await createTest(formValues, testId);
     if (!testCreationResponse.success) {
-      console.error("Failed to create test:", testCreationResponse.error);
+      console.error(
+        "Failed to create/update test:",
+        testCreationResponse.error,
+      );
     } else {
       const uploadQuestionsReponse = await uploadQuestions(
         testCreationResponse?.testId,
@@ -110,9 +83,14 @@ const TestCreation = () => {
           uploadQuestionsReponse.error,
         );
       } else {
-        console.log("Test created successfully", testCreationResponse.testId);
+        console.log(
+          "Test created/updated successfully",
+          testCreationResponse.testId,
+        );
+        navigate("/recruiter/test-library");
       }
     }
+    setIsFormSubmissionInProgress(false);
   };
 
   const updateQuestion = (updated: Question) => {
@@ -134,21 +112,25 @@ const TestCreation = () => {
       <TopBar />
       <Container maxWidth="md" className="testCreationPage">
         <Typography variant="h4" className="pageTitle">
-          Create a New Test
+          {isUpdateMode ? "Update Test" : "Create a New Test"}
         </Typography>
 
         <Box className="testCard">
-          <TestDetailsForm onSubmit={handleFormSubmit} isLoading={loading} />
+          <TestDetailsForm
+            onSubmit={handleGenerateQuestion}
+            isLoading={isQuestionGenerationInProgress}
+            initialValues={formValues}
+          />
         </Box>
 
         <Box mt={4}>
-          {loading && (
+          {isQuestionGenerationInProgress && (
             <Box display="flex" justifyContent="center" mt={4}>
               <CircularProgress />
             </Box>
           )}
 
-          {!loading && questions.length > 0 && (
+          {!isQuestionGenerationInProgress && questions.length > 0 && (
             <>
               <Typography variant="h5" className="sectionTitle" mb={2}>
                 Generated Questions for {formValues?.topic}
@@ -162,17 +144,14 @@ const TestCreation = () => {
                 />
               </Box>
 
-              <Box mt={2}>
-                <MUIButton
-                  className="pr-3"
-                  variant="outlined"
-                  color="error"
-                  onClick={resetAll}
+              <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleFormSubmission}
+                  disabled={isFormSubmissionInProgress}
                 >
-                  Clear Questions
-                </MUIButton>
-                <Button className="ml-3" onClick={handleCreateTest}>
-                  Create Test
+                  {isUpdateMode ? "Update Test" : "Create Test"}
                 </Button>
               </Box>
             </>

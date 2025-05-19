@@ -5,11 +5,12 @@ interface Props {
   children: JSX.Element | String;
   size?: "sm" | "md" | "xl";
   outline?: boolean;
+  disabled?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
   [key: string]: any;
 }
 
-const Button = ({ size, outline, children, ...rest }: Props) => {
+const Button = ({ size, outline, disabled, children, ...rest }: Props) => {
   const updateSize = (style: any) => {
     if (size === "xl") {
       return {
@@ -54,11 +55,25 @@ const Button = ({ size, outline, children, ...rest }: Props) => {
     let style = {};
     style = updateSize(style);
     style = updateColor(style);
+
+    if (disabled) {
+      style = {
+        ...style,
+        opacity: 0.5,
+        cursor: "not-allowed",
+      };
+    }
+
     return style;
   };
 
   return (
-    <button {...rest} className="home-btn" style={{ ...getStyle() }}>
+    <button
+      {...rest}
+      className="home-btn"
+      style={{ ...getStyle() }}
+      disabled={disabled}
+    >
       {children}
     </button>
   );

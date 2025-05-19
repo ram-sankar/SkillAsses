@@ -4,7 +4,7 @@ import {
   signInWithEmailAndPassword,
   signOut,
 } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { auth, db, TABLES } from "../config/firebase";
 import { UserType } from "common/models/User";
 
@@ -40,7 +40,7 @@ export const registerUser = async (
 export const loginUser = async (
   email: string,
   password: string,
-  userType: UserType,
+  expectedUserType: UserType,
 ) => {
   try {
     const userCredential = await signInWithEmailAndPassword(
@@ -49,8 +49,26 @@ export const loginUser = async (
       password,
     );
     const user = userCredential.user;
+
+    const userDocRef = doc(db, TABLES.USERS, user.uid);
+    const userSnapshot = await getDoc(userDocRef);
+
+    if (!userSnapshot.exists()) {
+      throw new Error("User data not found in database.");
+    }
+    const userData = userSnapshot.data();
+    console.log(userData);
+
+    if (userData.role !== expectedUserType) {
+      await signOut(auth);
+      throw new Error(
+        `Invalid role. Expected ${expectedUserType}, found ${userData.role}`,
+      );
+    }
+
     const idToken = await getIdToken(user);
-    await storeToken(idToken, user.uid, userType);
+    await storeToken(idToken, user.uid, userData.role);
+
     return { user, idToken };
   } catch (error) {
     throw error;
