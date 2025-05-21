@@ -27,8 +27,8 @@ const Button = ({ size, outline, disabled, children, ...rest }: Props) => {
     } else {
       return {
         ...style,
-        fontSize: "16px",
-        padding: "10px 24px",
+        fontSize: "14px",
+        padding: "9px 20px",
       };
     }
   };
@@ -68,12 +68,7 @@ const Button = ({ size, outline, disabled, children, ...rest }: Props) => {
   };
 
   return (
-    <button
-      {...rest}
-      className="home-btn"
-      style={{ ...getStyle() }}
-      disabled={disabled}
-    >
+    <button {...rest} className="home-btn" style={{ ...getStyle() }} disabled={disabled}>
       {children}
     </button>
   );

@@ -68,7 +68,9 @@ export default function TopBar(props: Props) {
 
   return (
     <nav className="navbar">
-      <div className="logo">SkillAssess ({userType})</div>
+      <div className="logo" onClick={() => navigate("/")}>
+        SkillAssess ({userType})
+      </div>
       <Box>{renderNavigation()}</Box>
       {isLoggedIn() ? renderLogout() : renderSignUp()}
     </nav>

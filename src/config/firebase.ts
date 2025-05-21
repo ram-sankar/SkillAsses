@@ -16,6 +16,7 @@ const firebaseConfig = {
 export const TABLES = {
   USERS: "users",
   TESTS: "tests",
+  ASSIGNMENTS: "assignments",
 };
 
 const app = initializeApp(firebaseConfig);

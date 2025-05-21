@@ -43,6 +43,10 @@ const routes = createBrowserRouter([
     element: <TestCreation />,
   },
   {
+    path: "/",
+    element: <Dashboard />,
+  },
+  {
     path: "*",
     element: <NotFound />,
   },

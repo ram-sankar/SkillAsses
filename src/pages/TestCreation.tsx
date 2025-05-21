@@ -5,28 +5,19 @@ import QuestionList from "../components/QuestionList";
 import { Question } from "../common/models/Question";
 import "./styles/TestCreation.scss";
 import TopBar from "components/TopBar";
-import {
-  generatePromptForQuestionCreation,
-  getResponseFromPrompt,
-} from "services/genaiService";
+import { generatePromptForQuestionCreation, getResponseFromPrompt } from "services/genaiService";
 import Button from "components/Button";
-import {
-  createTest,
-  uploadQuestions,
-  fetchTest,
-} from "services/questionService";
+import { createTest, uploadQuestions, fetchTest } from "services/questionService";
 import { useNavigate, useParams } from "react-router-dom";
 
 const TestCreation = () => {
   const navigate = useNavigate();
   const { testId } = useParams();
-  const [isQuestionGenerationInProgress, setIsQuestionGenerationInProgress] =
-    useState(false);
-  const [isFormSubmissionInProgress, setIsFormSubmissionInProgress] =
-    useState(false);
+  const [isQuestionGenerationInProgress, setIsQuestionGenerationInProgress] = useState(false);
+  const [isFormSubmissionInProgress, setIsFormSubmissionInProgress] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
   const [formValues, setFormValues] = useState<TestFormValues>();
-  const isUpdateMode = !!testId;
+  const isUpdateMode = testId !== "new";
 
   const fetchData = useCallback(async () => {
     if (testId) {
@@ -68,25 +59,13 @@ const TestCreation = () => {
     setIsFormSubmissionInProgress(true);
     const testCreationResponse = await createTest(formValues, testId);
     if (!testCreationResponse.success) {
-      console.error(
-        "Failed to create/update test:",
-        testCreationResponse.error,
-      );
+      console.error("Failed to create/update test:", testCreationResponse.error);
     } else {
-      const uploadQuestionsReponse = await uploadQuestions(
-        testCreationResponse?.testId,
-        questions,
-      );
+      const uploadQuestionsReponse = await uploadQuestions(testCreationResponse?.testId, questions);
       if (!uploadQuestionsReponse.success) {
-        console.error(
-          "Failed to upload questions:",
-          uploadQuestionsReponse.error,
-        );
+        console.error("Failed to upload questions:", uploadQuestionsReponse.error);
       } else {
-        console.log(
-          "Test created/updated successfully",
-          testCreationResponse.testId,
-        );
+        console.log("Test created/updated successfully", testCreationResponse.testId);
         navigate("/recruiter/test-library");
       }
     }
@@ -94,9 +73,7 @@ const TestCreation = () => {
   };
 
   const updateQuestion = (updated: Question) => {
-    setQuestions((prev) =>
-      prev.map((q) => (q.id === updated.id ? updated : q)),
-    );
+    setQuestions((prev) => prev.map((q) => (q.id === updated.id ? updated : q)));
   };
 
   const deleteQuestion = (id: number) => {
@@ -116,11 +93,7 @@ const TestCreation = () => {
         </Typography>
 
         <Box className="testCard">
-          <TestDetailsForm
-            onSubmit={handleGenerateQuestion}
-            isLoading={isQuestionGenerationInProgress}
-            initialValues={formValues}
-          />
+          <TestDetailsForm onSubmit={handleGenerateQuestion} isLoading={isQuestionGenerationInProgress} initialValues={formValues} />
         </Box>
 
         <Box mt={4}>
@@ -137,20 +110,11 @@ const TestCreation = () => {
               </Typography>
 
               <Box className="questionList">
-                <QuestionList
-                  questions={questions}
-                  onUpdate={updateQuestion}
-                  onDelete={deleteQuestion}
-                />
+                <QuestionList questions={questions} onUpdate={updateQuestion} onDelete={deleteQuestion} />
               </Box>
 
               <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleFormSubmission}
-                  disabled={isFormSubmissionInProgress}
-                >
+                <Button variant="contained" color="primary" onClick={handleFormSubmission} disabled={isFormSubmissionInProgress}>
                   {isUpdateMode ? "Update Test" : "Create Test"}
                 </Button>
               </Box>

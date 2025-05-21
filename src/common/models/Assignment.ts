@@ -1,7 +1,14 @@
 export interface Assignment {
-  title: string;
-  candidate: string;
+  testId: string;
+  candidateMailId: string;
+  recruiterUid: string;
   status: string;
-  dueDate: string;
-  interviewStage: string;
+  dueDate: number;
+  assignedDate: number;
+  submissionDate: number | null;
+  score: number | null;
+  feedback: string | null;
+  candidateResponses: {
+    [key: string]: string;
+  };
 }

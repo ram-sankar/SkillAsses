@@ -1,9 +1,8 @@
 export const assignmentColumns = [
-  { title: "Assignment Title", field: "title" },
-  { title: "Candidate Name", field: "candidate" },
+  { title: "Assignment Title", field: "testTitle" },
+  { title: "Candidate Mail Id", field: "candidateMailId" },
   { title: "Status", field: "status" },
-  { title: "Due Date", field: "dueDate" },
-  { title: "Interview Stage", field: "interviewStage" },
+  { title: "Assigned Date", field: "assignedDate" },
 ];
 
 export const testColumns = [
