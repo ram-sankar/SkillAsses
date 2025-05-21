@@ -34,7 +34,6 @@ const Assignments = () => {
         const { candidateMailId, ...rest } = assignment;
         return rest;
       });
-      console.log(assignments);
     } else {
       console.error("Invalid user type:", userType);
       return [];
