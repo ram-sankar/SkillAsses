@@ -1,22 +1,9 @@
 import { db, TABLES } from "../config/firebase";
-import {
-  collection,
-  addDoc,
-  doc,
-  updateDoc,
-  arrayUnion,
-  setDoc,
-  getDoc,
-  getDocs,
-  FirestoreError,
-} from "firebase/firestore";
+import { collection, addDoc, doc, updateDoc, arrayUnion, setDoc, getDoc, getDocs, FirestoreError } from "firebase/firestore";
 import { Question } from "common/models/Question";
 import { TestFormValues } from "components/TestDetailsForm";
 
-export const uploadQuestions = async (
-  testId: string | undefined,
-  questions: Question[],
-) => {
+export const uploadQuestions = async (testId: string | undefined, questions: Question[]) => {
   try {
     if (!testId) throw Error("testId cannot be empty");
     const testRef = doc(db, TABLES.TESTS, testId);
@@ -30,10 +17,7 @@ export const uploadQuestions = async (
   }
 };
 
-export const createTest = async (
-  testDetails: TestFormValues | undefined,
-  testId?: string,
-) => {
+export const createTest = async (testDetails: TestFormValues | undefined, testId?: string) => {
   try {
     if (!testDetails) throw Error("testDetails cannot be empty");
 
@@ -81,7 +65,7 @@ export const fetchTest = async (testId: string | undefined): Promise<any> => {
     if (testSnapshot.exists()) {
       return { id: testSnapshot.id, ...testSnapshot.data() };
     } else {
-      console.log("Test not found");
+      console.error("Test not found");
       return null;
     }
   } catch (error: any) {

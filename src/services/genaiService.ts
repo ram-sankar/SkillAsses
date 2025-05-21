@@ -15,7 +15,7 @@ export async function getResponseFromPrompt(prompt: string) {
     const text = response?.candidates?.[0]?.content?.parts?.[0]?.text;
     return text || "";
   } catch (e) {
-    console.log(e);
+    console.error(e);
     return "";
   }
 }

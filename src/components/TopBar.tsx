@@ -36,7 +36,7 @@ export default function TopBar(props: Props) {
     } else if (userType === UserType.CANDIDATE) {
       return (
         <ul className="nav-links">
-          <ListItemButton component="a" href="/candidate/assignments">
+          <ListItemButton component="a" href="/candidate/assigned-test">
             <ListItemText>Assignment List</ListItemText>
           </ListItemButton>
         </ul>

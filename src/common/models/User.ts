@@ -1,4 +1,11 @@
 export enum UserType {
   RECRUITER = "Recruiter",
-  CANDIDATE = "Developer",
+  CANDIDATE = "Candidate",
+}
+
+export interface UserDetails {
+  token: string;
+  uid: string;
+  email: string;
+  userType: UserType;
 }

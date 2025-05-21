@@ -61,39 +61,23 @@ const Dashboard = () => {
       <Container maxWidth="lg" className="dashboardContainer">
         <Grid container spacing={3} className="summaryGrid">
           <Grid item xs={12} md={3}>
-            <SummaryCard
-              title="Total Assignments"
-              count={totalAssignments}
-              href="/recruiter/assignments"
-            />
+            <SummaryCard title="Total Assignments" count={totalAssignments} href="/recruiter/assignments" />
           </Grid>
           <Grid item xs={12} md={3}>
-            <SummaryCard
-              title="Total Candidates"
-              count={totalUsers}
-              href="/recruiter/user-management"
-            />
+            <SummaryCard title="Total Candidates" count={totalUsers} href="/recruiter/user-management" />
           </Grid>
           <Grid item xs={12} md={3}>
-            <SummaryCard
-              title="Pending Assessments"
-              count={completedAssessments}
-              href="/recruiter/assignments?assignmentStatus=pending"
-            />
+            <SummaryCard title="Pending Assessments" count={completedAssessments} href="/recruiter/assignments?assignmentStatus=pending" />
           </Grid>
           <Grid item xs={12} md={3}>
-            <SummaryCard
-              title="Interview Ready"
-              count={pendingAssessments}
-              href="/recruiter/assignments?assignmentStatus=completed"
-            />
+            <SummaryCard title="Interview Ready" count={pendingAssessments} href="/recruiter/assignments?assignmentStatus=completed" />
           </Grid>
         </Grid>
 
         <div className="assignmentSection">
           <TableComponent
             data={assignments}
-            columns={assignmentColumns}
+            columns={assignmentColumns(userType as UserType)}
             title="Recent Assignments Overview"
             subtitle="Monitor candidate progress and upcoming deadlines"
           />

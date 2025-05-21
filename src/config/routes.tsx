@@ -43,6 +43,10 @@ const routes = createBrowserRouter([
     element: <TestCreation />,
   },
   {
+    path: "/candidate/test/:testId",
+    element: <TestCreation />,
+  },
+  {
     path: "/",
     element: <Dashboard />,
   },

@@ -1,7 +1,8 @@
 export interface Assignment {
+  id: string;
   testId: string;
   candidateMailId: string;
-  recruiterUid: string;
+  recruiterMailId: string;
   status: string;
   dueDate: number;
   assignedDate: number;
