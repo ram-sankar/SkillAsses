@@ -8,11 +8,21 @@ const genAI = new GoogleGenAI({
 
 export async function getResponseFromPrompt(prompt: string) {
   try {
-    const response = await genAI.models.generateContent({
+    const timeoutPromise = new Promise((_, reject) => {
+      setTimeout(() => {
+        reject(new Error("Timeout occurred"));
+      }, 10000);
+    });
+
+    const responsePromise = genAI.models.generateContent({
       model: "gemini-2.0-flash",
       contents: prompt,
     });
-    const text = response?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    const response = await Promise.race([responsePromise, timeoutPromise]);
+
+    // Typescript doesn't know that response is not a Promise<void>, so we need to cast it
+    const text = (response as any)?.candidates?.[0]?.content?.parts?.[0]?.text;
     return text || "";
   } catch (e) {
     console.error(e);
@@ -21,6 +31,7 @@ export async function getResponseFromPrompt(prompt: string) {
 }
 
 export const generatePromptForQuestionCreation = (values: TestFormValues) => {
+  console.log("Entering generatePromptForQuestionCreation");
   const numQuestions = Number(values.numQuestions) || 5;
   const difficulty = values.difficulty || "medium";
   const candidateLevel = values.candidateLevel || "fresher";

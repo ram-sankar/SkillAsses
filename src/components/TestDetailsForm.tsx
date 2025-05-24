@@ -1,12 +1,4 @@
-import {
-  TextField,
-  MenuItem,
-  Select,
-  InputLabel,
-  FormControl,
-  Box,
-  Grid,
-} from "@mui/material";
+import { TextField, MenuItem, Select, InputLabel, FormControl, Box, Grid } from "@mui/material";
 import { QuestionType } from "common/models/Question";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -46,11 +38,7 @@ const validationSchema = Yup.object({
   numQuestions: Yup.number().min(1, "At least 1").required("Required"),
 });
 
-const TestDetailsForm = ({
-  onSubmit,
-  isLoading,
-  initialValues,
-}: TestDetailsFormProps) => {
+const TestDetailsForm = ({ onSubmit, isLoading, initialValues }: TestDetailsFormProps) => {
   const formik = useFormik<TestFormValues>({
     initialValues: {
       topic: "",
@@ -88,23 +76,9 @@ const TestDetailsForm = ({
 
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
-          <FormControl
-            fullWidth
-            required
-            margin="normal"
-            error={
-              formik.touched.candidateLevel &&
-              Boolean(formik.errors.candidateLevel)
-            }
-          >
+          <FormControl fullWidth required margin="normal" error={formik.touched.candidateLevel && Boolean(formik.errors.candidateLevel)}>
             <InputLabel>Candidate Level</InputLabel>
-            <Select
-              name="candidateLevel"
-              value={formik.values.candidateLevel}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              label="Candidate Level"
-            >
+            <Select name="candidateLevel" value={formik.values.candidateLevel} onChange={formik.handleChange} onBlur={formik.handleBlur} label="Candidate Level">
               {candidateLevels.map((level) => (
                 <MenuItem key={level} value={level}>
                   {level}
@@ -120,22 +94,9 @@ const TestDetailsForm = ({
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <FormControl
-            fullWidth
-            required
-            margin="normal"
-            error={
-              formik.touched.difficulty && Boolean(formik.errors.difficulty)
-            }
-          >
+          <FormControl fullWidth required margin="normal" error={formik.touched.difficulty && Boolean(formik.errors.difficulty)}>
             <InputLabel>Difficulty</InputLabel>
-            <Select
-              name="difficulty"
-              value={formik.values.difficulty}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              label="Difficulty"
-            >
+            <Select name="difficulty" value={formik.values.difficulty} onChange={formik.handleChange} onBlur={formik.handleBlur} label="Difficulty">
               {difficultyLevels.map((level) => (
                 <MenuItem key={level} value={level}>
                   {level}
@@ -151,22 +112,9 @@ const TestDetailsForm = ({
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <FormControl
-            fullWidth
-            required
-            margin="normal"
-            error={
-              formik.touched.questionType && Boolean(formik.errors.questionType)
-            }
-          >
+          <FormControl fullWidth required margin="normal" error={formik.touched.questionType && Boolean(formik.errors.questionType)}>
             <InputLabel>Question Type</InputLabel>
-            <Select
-              name="questionType"
-              value={formik.values.questionType}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              label="Question Type"
-            >
+            <Select name="questionType" value={formik.values.questionType} onChange={formik.handleChange} onBlur={formik.handleBlur} label="Question Type">
               {questionTypes.map((questionType) => (
                 <MenuItem key={questionType.value} value={questionType.value}>
                   {questionType.text}
@@ -190,12 +138,8 @@ const TestDetailsForm = ({
             value={formik.values.testDuration}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={
-              formik.touched.testDuration && Boolean(formik.errors.testDuration)
-            }
-            helperText={
-              formik.touched.testDuration && formik.errors.testDuration
-            }
+            error={formik.touched.testDuration && Boolean(formik.errors.testDuration)}
+            helperText={formik.touched.testDuration && formik.errors.testDuration}
             fullWidth
             margin="normal"
             required
@@ -211,12 +155,8 @@ const TestDetailsForm = ({
             value={formik.values.numQuestions}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={
-              formik.touched.numQuestions && Boolean(formik.errors.numQuestions)
-            }
-            helperText={
-              formik.touched.numQuestions && formik.errors.numQuestions
-            }
+            error={formik.touched.numQuestions && Boolean(formik.errors.numQuestions)}
+            helperText={formik.touched.numQuestions && formik.errors.numQuestions}
             fullWidth
             margin="normal"
             required
@@ -225,21 +165,10 @@ const TestDetailsForm = ({
       </Grid>
 
       <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
-        <Button
-          type="reset"
-          onClick={formik.handleReset}
-          disabled={isLoading}
-          color="secondary"
-          outline={true.valueOf()}
-        >
+        <Button type="reset" onClick={formik.handleReset} disabled={isLoading} color="secondary" outline={true.valueOf()}>
           Reset
         </Button>
-        <Button
-          type="submit"
-          variant="contained"
-          color="primary"
-          disabled={isLoading}
-        >
+        <Button type="submit" variant="contained" color="primary" disabled={isLoading}>
           {isLoading ? "Generating..." : "Generate Questions"}
         </Button>
       </Box>

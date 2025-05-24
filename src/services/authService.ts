@@ -61,28 +61,28 @@ export const logoutUser = async () => {
 };
 
 const storeToken = async (token: string, uid: string, userType: UserType, email: string) => {
-  sessionStorage.setItem("token", token);
-  sessionStorage.setItem("uid", uid);
-  sessionStorage.setItem("userType", userType);
-  sessionStorage.setItem("email", email);
+  localStorage.setItem("token", token);
+  localStorage.setItem("uid", uid);
+  localStorage.setItem("userType", userType);
+  localStorage.setItem("email", email);
 };
 
 const clearToken = () => {
-  sessionStorage.removeItem("token");
-  sessionStorage.removeItem("uid");
-  sessionStorage.removeItem("userType");
-  sessionStorage.removeItem("email");
+  localStorage.removeItem("token");
+  localStorage.removeItem("uid");
+  localStorage.removeItem("userType");
+  localStorage.removeItem("email");
 };
 
 export const isLoggedIn = () => {
-  return !!sessionStorage.getItem("token");
+  return !!localStorage.getItem("token");
 };
 
 export const getUserDetails = (): UserDetails => {
-  const token = sessionStorage.getItem("token");
-  const uid = sessionStorage.getItem("uid");
-  const email = sessionStorage.getItem("email");
-  const userType = sessionStorage.getItem("userType") as UserType | undefined;
+  const token = localStorage.getItem("token");
+  const uid = localStorage.getItem("uid");
+  const email = localStorage.getItem("email");
+  const userType = localStorage.getItem("userType") as UserType | undefined;
 
   return {
     token: token || "",

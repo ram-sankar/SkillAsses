@@ -9,6 +9,7 @@ import { generatePromptForQuestionCreation, getResponseFromPrompt } from "servic
 import Button from "components/Button";
 import { createTest, uploadQuestions, fetchTest } from "services/questionService";
 import { useNavigate, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const TestCreation = () => {
   const navigate = useNavigate();
@@ -16,15 +17,16 @@ const TestCreation = () => {
   const [isQuestionGenerationInProgress, setIsQuestionGenerationInProgress] = useState(false);
   const [isFormSubmissionInProgress, setIsFormSubmissionInProgress] = useState(false);
   const [questions, setQuestions] = useState<Question[]>([]);
+  const [formInitialValue, setFormInitialValue] = useState<TestFormValues>();
   const [formValues, setFormValues] = useState<TestFormValues>();
   const isUpdateMode = testId !== "new";
 
   const fetchData = useCallback(async () => {
-    if (testId) {
+    if (isUpdateMode && testId) {
       setIsQuestionGenerationInProgress(true);
       const testData = await fetchTest(testId);
       if (testData) {
-        setFormValues(testData);
+        setFormInitialValue(testData);
         setQuestions(testData.questions || []);
       }
       setIsQuestionGenerationInProgress(false);
@@ -40,19 +42,26 @@ const TestCreation = () => {
     setQuestions([]);
     setFormValues(values);
 
-    const questionCreationPrompt = generatePromptForQuestionCreation(values);
-    const responseText = await getResponseFromPrompt(questionCreationPrompt);
+    try {
+      const questionCreationPrompt = generatePromptForQuestionCreation(values);
+      const responseText = await getResponseFromPrompt(questionCreationPrompt);
 
-    const jsonString = responseText.replace(/```json|```/g, "").trim();
-    const parsed: any[] = JSON.parse(jsonString);
-    const formattedQuestions: Question[] = parsed.map((q, index) => ({
-      id: index + 1,
-      text: q.text,
-      type: q.type,
-    }));
+      const jsonString = responseText.replace(/```json|```/g, "").trim();
+      const parsed: any[] = JSON.parse(jsonString);
+      const formattedQuestions: Question[] = parsed.map((q, index) => ({
+        id: index + 1,
+        text: q.text,
+        type: q.type,
+      }));
 
-    setQuestions(formattedQuestions);
-    setIsQuestionGenerationInProgress(false);
+      setQuestions(formattedQuestions);
+      setIsQuestionGenerationInProgress(false);
+    } catch (error: any) {
+      console.error("Error parsing JSON:", error.message);
+    } finally {
+      console.log("finally");
+      setIsQuestionGenerationInProgress(false);
+    }
   };
 
   const handleFormSubmission = async () => {
@@ -60,12 +69,14 @@ const TestCreation = () => {
     const testCreationResponse = await createTest(formValues, testId);
     if (!testCreationResponse.success) {
       console.error("Failed to create/update test:", testCreationResponse.error);
+      toast.error("Failed to create test");
     } else {
       const uploadQuestionsReponse = await uploadQuestions(testCreationResponse?.testId, questions);
       if (!uploadQuestionsReponse.success) {
         console.error("Failed to upload questions:", uploadQuestionsReponse.error);
+        toast.error("Failed to upload questions");
       } else {
-        console.log("Test created/updated successfully", testCreationResponse.testId);
+        toast.success("Test created/updated successfully!");
         navigate("/recruiter/test-library");
       }
     }
@@ -80,10 +91,6 @@ const TestCreation = () => {
     setQuestions((prev) => prev.filter((q) => q.id !== id));
   };
 
-  const resetAll = () => {
-    setQuestions([]);
-  };
-
   return (
     <>
       <TopBar />
@@ -93,7 +100,11 @@ const TestCreation = () => {
         </Typography>
 
         <Box className="testCard">
-          <TestDetailsForm onSubmit={handleGenerateQuestion} isLoading={isQuestionGenerationInProgress} initialValues={formValues} />
+          <TestDetailsForm
+            onSubmit={handleGenerateQuestion}
+            isLoading={isQuestionGenerationInProgress}
+            initialValues={formInitialValue}
+          />
         </Box>
 
         <Box mt={4}>
@@ -110,11 +121,20 @@ const TestCreation = () => {
               </Typography>
 
               <Box className="questionList">
-                <QuestionList questions={questions} onUpdate={updateQuestion} onDelete={deleteQuestion} />
+                <QuestionList
+                  questions={questions}
+                  onUpdate={updateQuestion}
+                  onDelete={deleteQuestion}
+                />
               </Box>
 
               <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
-                <Button variant="contained" color="primary" onClick={handleFormSubmission} disabled={isFormSubmissionInProgress}>
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={handleFormSubmission}
+                  disabled={isFormSubmissionInProgress}
+                >
                   {isUpdateMode ? "Update Test" : "Create Test"}
                 </Button>
               </Box>

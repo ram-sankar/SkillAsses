@@ -8,6 +8,8 @@ import Dashboard from "pages/Dashboard";
 import Assignments from "pages/Assignments";
 import TestCreation from "pages/TestCreation";
 import TestLibrary from "pages/TestLibrary";
+import CandidateTest from "pages/CandidateTest";
+import RequireAuth from "components/RequireAuth";
 
 const routes = createBrowserRouter([
   {
@@ -24,31 +26,59 @@ const routes = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <Dashboard />,
+    element: (
+      <RequireAuth>
+        <Dashboard />
+      </RequireAuth>
+    ),
   },
   {
     path: "/:userType/assigned-test",
-    element: <Assignments />,
+    element: (
+      <RequireAuth>
+        <Assignments />
+      </RequireAuth>
+    ),
   },
   {
     path: "/recruiter/test-library",
-    element: <TestLibrary />,
+    element: (
+      <RequireAuth>
+        <TestLibrary />
+      </RequireAuth>
+    ),
   },
   {
     path: "/recruiter/test-library/:testId",
-    element: <TestCreation />,
+    element: (
+      <RequireAuth>
+        <TestCreation />
+      </RequireAuth>
+    ),
   },
   {
     path: "/recruiter/candidates",
-    element: <TestCreation />,
+    element: (
+      <RequireAuth>
+        <TestCreation />
+      </RequireAuth>
+    ),
   },
   {
-    path: "/candidate/test/:testId",
-    element: <TestCreation />,
+    path: "/candidate/test/:assignmentId",
+    element: (
+      <RequireAuth>
+        <CandidateTest />
+      </RequireAuth>
+    ),
   },
   {
     path: "/",
-    element: <Dashboard />,
+    element: (
+      <RequireAuth>
+        <Dashboard />
+      </RequireAuth>
+    ),
   },
   {
     path: "*",

@@ -22,6 +22,7 @@ yarn-error.log*
 
 # IDE settings
 .vscode/
+.zed/
 .idea/
 .DS_Store
 

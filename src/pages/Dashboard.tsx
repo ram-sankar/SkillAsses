@@ -8,6 +8,8 @@ import SummaryCard from "components/SummaryCard";
 import "./styles/Dashboard.scss";
 import TableComponent from "components/TableComponent";
 import { assignmentColumns } from "common/constants";
+import { getAssignments } from "services/assignmentService";
+import { Assignment } from "common/models/Assignment";
 
 const assignments = [
   {
@@ -40,20 +42,30 @@ const Dashboard = () => {
   const [totalUsers, setTotalUsers] = useState(0);
   const [pendingAssessments, setPendingAssessments] = useState(0);
   const [completedAssessments, setCompletedAssessments] = useState(0);
+  const [assignmentsData, setAssignmentsData] = useState<Assignment[]>([]);
 
   useEffect(() => {
-    const userDetails = getUserDetails();
-    setUserType(userDetails.userType);
-
     if (!isLoggedIn()) {
       navigate("/login");
     }
 
+    setStats();
+    getAssignmentsData();
+  }, [navigate]);
+
+  const getAssignmentsData = async () => {
+    const userDetails = getUserDetails();
+    setUserType(userDetails.userType);
+    const assignments = await getAssignments(userDetails.userType, true);
+    setAssignmentsData(assignments);
+  };
+
+  const setStats = () => {
     setTotalAssignments(10);
     setTotalUsers(25);
     setPendingAssessments(5);
     setCompletedAssessments(12);
-  }, [navigate]);
+  };
 
   return (
     <>
@@ -76,8 +88,9 @@ const Dashboard = () => {
 
         <div className="assignmentSection">
           <TableComponent
-            data={assignments}
+            data={assignmentsData}
             columns={assignmentColumns(userType as UserType)}
+            baseUrl="/candidate/test"
             title="Recent Assignments Overview"
             subtitle="Monitor candidate progress and upcoming deadlines"
           />

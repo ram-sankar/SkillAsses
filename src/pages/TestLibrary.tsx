@@ -5,10 +5,18 @@ import { fetchTests } from "../services/questionService";
 import TableComponent from "components/TableComponent";
 import { testColumns } from "common/constants";
 import { TestData } from "common/models/Question";
-import { Dialog, DialogActions, DialogContent, DialogTitle, IconButton, TextField } from "@mui/material";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  TextField,
+} from "@mui/material";
 import Button from "components/Button";
 import { createAssignment } from "services/assignmentService";
 import { toast } from "react-toastify";
+import { Close } from "@mui/icons-material";
 
 const TestLibrary = () => {
   const [testsData, setTestsData] = useState<TestData[]>([]);
@@ -64,24 +72,32 @@ const TestLibrary = () => {
         />
       </div>
 
-      <Dialog open={openAssignModal} onClose={() => setOpenAssignModal(false)} maxWidth="xl">
-        <DialogTitle>
+      <Dialog
+        open={openAssignModal}
+        onClose={() => setOpenAssignModal(false)}
+        PaperProps={{
+          sx: {
+            width: 400,
+            borderRadius: 3,
+            p: 2,
+          },
+        }}
+      >
+        <DialogTitle sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
           Assign Test
-          <IconButton style={{ position: "absolute", right: 8, top: 8 }} onClick={() => setOpenAssignModal(false)}>
-            {/* <CloseIcon /> */}x
+          <IconButton
+            style={{ position: "absolute", right: 8, top: 8 }}
+            onClick={() => setOpenAssignModal(false)}
+          >
+            <Close />
           </IconButton>
         </DialogTitle>
         <DialogContent>
-          <TextField fullWidth label="Candidate Email" value={email} onChange={(e) => setEmail(e.target.value)} />
-          <br />
-          <br />
           <TextField
             fullWidth
-            label="Expiry Date"
-            type="date"
-            InputLabelProps={{
-              shrink: true,
-            }}
+            label="Candidate Email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </DialogContent>
         <DialogActions>

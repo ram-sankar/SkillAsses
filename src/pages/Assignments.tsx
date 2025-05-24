@@ -20,25 +20,9 @@ const Assignments = () => {
   const getAssignmentsData = async () => {
     const userDetails = getUserDetails();
     setUserType(userDetails.userType);
-
-    let assignmentList;
-    const assignments = await getAssignments(userDetails.userType);
-
-    if (userDetails.userType === UserType.RECRUITER) {
-      assignmentList = assignments.map((assignment) => {
-        const { recruiterMailId, ...rest } = assignment;
-        return rest;
-      });
-    } else if (userDetails.userType === UserType.CANDIDATE) {
-      assignmentList = assignments.map((assignment) => {
-        const { candidateMailId, ...rest } = assignment;
-        return rest;
-      });
-    } else {
-      console.error("Invalid user type:", userType);
-      return [];
-    }
-    setAssignmentsData(assignmentList);
+    const assignments = await getAssignments(userDetails.userType, true);
+    console.log(assignments);
+    setAssignmentsData(assignments);
   };
 
   return (

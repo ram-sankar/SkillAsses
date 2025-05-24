@@ -1,5 +1,15 @@
 import { db, TABLES } from "../config/firebase";
-import { collection, addDoc, doc, updateDoc, arrayUnion, setDoc, getDoc, getDocs, FirestoreError } from "firebase/firestore";
+import {
+  collection,
+  addDoc,
+  doc,
+  updateDoc,
+  arrayUnion,
+  setDoc,
+  getDoc,
+  getDocs,
+  FirestoreError,
+} from "firebase/firestore";
 import { Question } from "common/models/Question";
 import { TestFormValues } from "components/TestDetailsForm";
 
@@ -21,7 +31,7 @@ export const createTest = async (testDetails: TestFormValues | undefined, testId
   try {
     if (!testDetails) throw Error("testDetails cannot be empty");
 
-    if (testId) {
+    if (testId && testId !== "new") {
       // Update existing test
       const testRef = doc(db, TABLES.TESTS, testId);
       await updateDoc(testRef, { ...testDetails });

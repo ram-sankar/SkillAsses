@@ -9,6 +9,7 @@ export interface Assignment {
   submissionDate: number | null;
   score: number | null;
   feedback: string | null;
+  overallScore: number;
   candidateResponses: {
     [key: string]: string;
   };
