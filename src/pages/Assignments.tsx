@@ -21,7 +21,6 @@ const Assignments = () => {
     const userDetails = getUserDetails();
     setUserType(userDetails.userType);
     const assignments = await getAssignments(userDetails.userType, true);
-    console.log(assignments);
     setAssignmentsData(assignments);
   };
 

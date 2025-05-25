@@ -3,7 +3,7 @@ export interface Assignment {
   testId: string;
   candidateMailId: string;
   recruiterMailId: string;
-  status: string;
+  status: STATUS;
   dueDate: number;
   assignedDate: number;
   submissionDate: number | null;
@@ -11,6 +11,17 @@ export interface Assignment {
   feedback: string | null;
   overallScore: number;
   candidateResponses: {
-    [key: string]: string;
+    [key: number]: CandidateResponse;
   };
+}
+
+export interface CandidateResponse {
+  score: number;
+  answer: string;
+}
+
+export enum STATUS {
+  COMPLETED = "completed",
+  IN_PROGRESS = "in-progress",
+  ASSIGNED = "assigned",
 }

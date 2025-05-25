@@ -43,8 +43,8 @@ export const getAssignments = async (userType: UserType, shouldReturnFilteredLis
   let q: any;
 
   if (userType === UserType.RECRUITER) {
-    const recruiterUid = getUserDetails().uid;
-    q = query(assignmentsRef, where("recruiterUid", "==", recruiterUid));
+    const recruiterMailId = getUserDetails().email;
+    q = query(assignmentsRef, where("recruiterMailId", "==", recruiterMailId));
   } else {
     const candidateMailId = getUserDetails().email;
     q = query(assignmentsRef, where("candidateMailId", "==", candidateMailId));
@@ -68,6 +68,13 @@ export const getAssignments = async (userType: UserType, shouldReturnFilteredLis
         ? `${assignedDate.getDate().toString().padStart(2, "0")}-${(assignedDate.getMonth() + 1).toString().padStart(2, "0")}-${assignedDate.getFullYear()}`
         : null;
 
+      const candidateResponses = Object.values(assignmentData.candidateResponses);
+      const totalScore =
+        candidateResponses?.reduce?.((sum, item) => sum + (item.score || 0), 0) || 0;
+      const avgScore = candidateResponses.length
+        ? ((totalScore / candidateResponses.length) * 10).toFixed(0)
+        : "0";
+
       assignments.push({
         id: firebaseDoc.id,
         testId: assignmentData.testId,
@@ -75,7 +82,7 @@ export const getAssignments = async (userType: UserType, shouldReturnFilteredLis
         recruiterMailId: assignmentData.recruiterMailId,
         testTitle: testData.topic,
         status: assignmentData.status,
-        overallScore: assignmentData.overallScore,
+        overallScore: avgScore + "%",
         assignedDate: formattedDate,
       });
     }
@@ -126,15 +133,14 @@ export const saveAnswerAndScore = async (
   questionId: string,
   answer: string,
   score: number,
-  overallScore: number,
+  status: string,
 ) => {
   try {
     const assignmentRef = doc(db, TABLES.ASSIGNMENTS, assignmentId);
     await updateDoc(assignmentRef, {
       [`candidateResponses.${questionId}.answer`]: answer,
       [`candidateResponses.${questionId}.score`]: score,
-      overallScore: overallScore,
-      status: "completed",
+      status: status,
     });
     return { success: true };
   } catch (error: any) {

@@ -12,7 +12,6 @@ export const assignmentColumns = (userType: UserType) => [
 ];
 
 export const testColumns = [
-  { title: "Test ID", field: "id" },
   { title: "Topic", field: "topic" },
   { title: "Number of Questions", field: "numQuestions" },
   { title: "Question Type", field: "questionType" },

@@ -83,3 +83,6 @@ Do not include any explanation or extra text outside the JSON Array.
     `.trim();
   }
 };
+
+export const generatePromptForScoreComputation = (questionText: string, userAnswer: string) =>
+  `Score the following candidate answer out of 10 based on correctness and completeness.\nQuestion: ${questionText}\nCandidate answer: ${userAnswer}\nOnly provide a number between 0 and 10.`;
