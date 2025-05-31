@@ -48,7 +48,7 @@ export default function Login(props: Props) {
     setErrorMessage(null);
     try {
       const response = await loginUser(values.email, values.password, userType);
-      if (response.user && response.idToken) {
+      if (response.uid && response.idToken) {
         navigate("/dashboard");
       } else {
         setErrorMessage("Login failed. Invalid credentials.");
@@ -81,8 +81,7 @@ export default function Login(props: Props) {
   };
 
   const switchUserType = () => {
-    const newUserType =
-      userType === UserType.CANDIDATE ? UserType.RECRUITER : UserType.CANDIDATE;
+    const newUserType = userType === UserType.CANDIDATE ? UserType.RECRUITER : UserType.CANDIDATE;
     setUserType(newUserType);
     navigate(`?user=${newUserType}`, { replace: true });
   };
@@ -104,9 +103,7 @@ export default function Login(props: Props) {
                   fullWidth
                   {...formik.getFieldProps("email")}
                   errorMessage={
-                    formik.touched.email && formik.errors.email
-                      ? formik.errors.email
-                      : null
+                    formik.touched.email && formik.errors.email ? formik.errors.email : null
                   }
                 />
               </div>
@@ -144,10 +141,7 @@ export default function Login(props: Props) {
                 <br />
                 <span className="btn" onClick={switchUserType}>
                   Switch to{" "}
-                  {userType === UserType.CANDIDATE
-                    ? UserType.RECRUITER
-                    : UserType.CANDIDATE}{" "}
-                  login
+                  {userType === UserType.CANDIDATE ? UserType.RECRUITER : UserType.CANDIDATE} login
                 </span>
               </p>
             </form>

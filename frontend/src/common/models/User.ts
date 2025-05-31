@@ -8,4 +8,5 @@ export interface UserDetails {
   uid: string;
   email: string;
   userType: UserType;
+  username: string;
 }
