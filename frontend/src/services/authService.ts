@@ -33,9 +33,7 @@ export const loginUser = async (
       password,
       expectedUserType,
     });
-
-    const { idToken, uid, role, username, email: userEmail } = response.data;
-
+    const { idToken, uid, role, username, email: userEmail } = response?.data?.data;
     storeToken(idToken, uid, role, userEmail, username);
 
     return { uid, idToken };

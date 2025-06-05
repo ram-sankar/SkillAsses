@@ -43,7 +43,7 @@ const TestLibrary = () => {
     if (result.success) {
       toast.success("Assignment created successfully!");
     } else {
-      console.error("Error creating assignment:", result.error);
+      console.error("Error creating assignment:", result);
       toast.error("Failed to create assignment.");
     }
     setOpenAssignModal(false);
