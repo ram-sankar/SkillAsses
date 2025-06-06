@@ -92,10 +92,22 @@ export const getAssignments = async (req: AuthenticatedRequest, res: Response): 
       return;
     }
 
+    const testIds = assignments.map((assignment: any) => assignment.testId);
+    const uniqueTestIds = [...new Set(testIds)];
+
+    const testDataMap: { [testId: string]: any } = {};
+    const batchSize = 10; // Firebase 'in' query limit
+    for (let i = 0; i < uniqueTestIds.length; i += batchSize) {
+      const batch = uniqueTestIds.slice(i, i + batchSize);
+      const tests = await queryDocuments(FIREBASE_TABLES.TESTS, "__name__", "in", batch);
+      tests.forEach((test: any) => {
+        testDataMap[test.id] = test;
+      });
+    }
+
     const assignmentDetails = [];
     for (const assignment of assignments) {
-      const testData: any = await getDocument(FIREBASE_TABLES.TESTS, assignment.testId);
-
+      const testData = testDataMap[assignment.testId];
       if (testData) {
         const assignedDate =
           typeof assignment.assignedDate === "number" ? new Date(assignment.assignedDate) : null;
@@ -119,7 +131,7 @@ export const getAssignments = async (req: AuthenticatedRequest, res: Response): 
           testId: assignment.testId,
           candidateMailId: assignment.candidateMailId,
           recruiterMailId: assignment.recruiterMailId,
-          testTitle: testData.title,
+          testTitle: testData.topic,
           status: assignment.status,
           overallScore: avgScore + "%",
           assignedDate: formattedDate,
@@ -129,16 +141,16 @@ export const getAssignments = async (req: AuthenticatedRequest, res: Response): 
 
     if (shouldReturnFilteredList) {
       if (userType === UserRole.RECRUITER) {
-        res.json(assignments.map(({ recruiterMailId, ...rest }) => rest));
+        res.json(assignmentDetails.map(({ recruiterMailId, ...rest }) => rest));
       } else if (userType === UserRole.CANDIDATE) {
-        res.json(assignments.map(({ candidateMailId, ...rest }) => rest));
+        res.json(assignmentDetails.map(({ candidateMailId, ...rest }) => rest));
       } else {
-        res.json(assignments);
+        res.json(assignmentDetails);
       }
       return;
     }
-
-    res.json(assignments);
+    console.log(assignmentDetails);
+    res.json(assignmentDetails);
   } catch (error: any) {
     sendError(res, error.message || ASSIGNMENT_MESSAGES.FAILED_CREATE_ASSIGNMENT);
   }

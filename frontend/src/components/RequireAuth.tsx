@@ -21,7 +21,7 @@ const RequireAuth = ({ children }: Props) => {
     checkAuth();
   }, [navigate]);
 
-  return <>{!loading && children}</>;
+  return <>{loading ? null : children}</>;
 };
 
 export default RequireAuth;

@@ -66,9 +66,7 @@ const TestCreation = () => {
 
   const handleFormSubmission = async () => {
     setIsFormSubmissionInProgress(true);
-    console.log(formValues);
     const testCreationResponse = await createOrUpdateTest(formValues, testId);
-    console.log(testCreationResponse);
     if (!testCreationResponse.success) {
       console.error("Failed to create/update test:", testCreationResponse.error);
       toast.error("Failed to create test");

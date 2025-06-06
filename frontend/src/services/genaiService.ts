@@ -31,7 +31,6 @@ export async function getResponseFromPrompt(prompt: string) {
 }
 
 export const generatePromptForQuestionCreation = (values: TestFormValues) => {
-  console.log("Entering generatePromptForQuestionCreation");
   const numQuestions = Number(values.numQuestions) || 5;
   const difficulty = values.difficulty || "medium";
   const candidateLevel = values.candidateLevel || "fresher";

@@ -6,7 +6,6 @@ const API_BASE = "/api/tests";
 
 export const uploadQuestions = async (testId: string | undefined, questions: Question[]) => {
   try {
-    console.log(testId);
     if (!testId) throw Error("testId cannot be empty in frontend");
     const response = await axiosInstance.put(`${API_BASE}/${testId}/questions`, { questions });
     return { success: true };
@@ -31,7 +30,6 @@ export const createOrUpdateTest = async (
       // Create new test
       response = await axiosInstance.post(`${API_BASE}`, testDetails);
     }
-    console.log(response);
     return { success: true, testId: response?.data?.data?.testId };
   } catch (error: any) {
     console.error("Error creating/updating test:", error);
