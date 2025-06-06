@@ -17,7 +17,7 @@ const SummaryView: React.FC<Props> = ({ questions, answers, scores }) => {
   const navigate = useNavigate();
 
   const totalScore = questions.reduce((acc, q) => acc + (scores[q.id] || 0), 0);
-  const averageScore = (totalScore / questions.length).toFixed(2);
+  const averageScore = ((totalScore * 10) / questions.length).toFixed(1);
 
   return (
     <Box
@@ -35,7 +35,7 @@ const SummaryView: React.FC<Props> = ({ questions, answers, scores }) => {
         Test Summary
       </Typography>
       <Typography variant="h5" mb={3} textAlign="center" color="primary">
-        Overall Score: {averageScore} / 10
+        Your Score: {averageScore}%
       </Typography>
       <div className="summary-list">
         {questions.map((q, idx) => (

@@ -49,7 +49,11 @@ export default function Login(props: Props) {
     try {
       const response = await loginUser(values.email, values.password, userType);
       if (response.uid && response.idToken) {
-        navigate("/dashboard");
+        if (userType === UserType.CANDIDATE) {
+          navigate(`/${UserType.CANDIDATE}/assigned-test`);
+        } else {
+          navigate("/dashboard");
+        }
       } else {
         setErrorMessage("Login failed. Invalid credentials.");
       }

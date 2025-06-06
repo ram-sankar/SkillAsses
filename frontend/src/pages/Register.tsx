@@ -36,12 +36,7 @@ export default function Register(props: Props) {
   const handleFormSubmit = async (values: FormElements) => {
     setIsLoading(true);
     try {
-      const response = await registerUser(
-        values.email,
-        values.password,
-        values.username,
-        userType,
-      );
+      const response = await registerUser(values.email, values.password, values.username, userType);
       if (response) {
         navigate(`/login?user=${userType}&email=${values.email}`);
       } else {
@@ -59,8 +54,7 @@ export default function Register(props: Props) {
   };
 
   const switchUserType = () => {
-    const newUserType =
-      userType === UserType.CANDIDATE ? UserType.RECRUITER : UserType.CANDIDATE;
+    const newUserType = userType === UserType.CANDIDATE ? UserType.RECRUITER : UserType.CANDIDATE;
     setUserType(newUserType);
     navigate(`?user=${newUserType}`, { replace: true });
   };
@@ -101,6 +95,17 @@ export default function Register(props: Props) {
             <form className="login-form" onSubmit={formik.handleSubmit}>
               <div className="form-group">
                 <CustomInput
+                  id="email"
+                  label="Mail Id"
+                  fullWidth
+                  {...formik.getFieldProps("email")}
+                  errorMessage={
+                    formik.touched.email && formik.errors.email ? formik.errors.email : null
+                  }
+                />
+              </div>
+              <div className="form-group">
+                <CustomInput
                   id="username"
                   label="Username"
                   fullWidth
@@ -126,19 +131,6 @@ export default function Register(props: Props) {
                   }
                 />
               </div>
-              <div className="form-group">
-                <CustomInput
-                  id="email"
-                  label="Mail Id"
-                  fullWidth
-                  {...formik.getFieldProps("email")}
-                  errorMessage={
-                    formik.touched.email && formik.errors.email
-                      ? formik.errors.email
-                      : null
-                  }
-                />
-              </div>
               <Button type="submit" size="xl" disabled={isLoading}>
                 {isLoading ? (
                   <>
@@ -158,9 +150,7 @@ export default function Register(props: Props) {
                 <br />
                 <span className="btn" onClick={switchUserType}>
                   Register as{" "}
-                  {userType === UserType.CANDIDATE
-                    ? UserType.RECRUITER
-                    : UserType.CANDIDATE}
+                  {userType === UserType.CANDIDATE ? UserType.RECRUITER : UserType.CANDIDATE}
                 </span>
               </p>
             </form>

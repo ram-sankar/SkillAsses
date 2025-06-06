@@ -1,11 +1,16 @@
 import { UserType } from "common/models/User";
 import axiosInstance, { handleRequestError } from "./axiosInstance";
+import { getUserDetails } from "./authService";
 
 const API_URL = "/api/assignments";
 
 export const createAssignment = async (testId: string, candidateMailId: string) => {
   try {
-    const response = await axiosInstance.post(API_URL, { testId, candidateMailId });
+    const response = await axiosInstance.post(API_URL, {
+      testId,
+      candidateMailId,
+      recruiterMailId: getUserDetails().email,
+    });
 
     return { success: true, assignmentId: response.data.assignmentId };
   } catch (error: any) {
