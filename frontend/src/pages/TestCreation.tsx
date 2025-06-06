@@ -7,7 +7,7 @@ import "./styles/TestCreation.scss";
 import TopBar from "components/TopBar";
 import { generatePromptForQuestionCreation, getResponseFromPrompt } from "services/genaiService";
 import Button from "components/Button";
-import { createTest, uploadQuestions, fetchTest } from "services/questionService";
+import { createOrUpdateTest, uploadQuestions, fetchTest } from "services/questionService";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -27,6 +27,7 @@ const TestCreation = () => {
       const testData = await fetchTest(testId);
       if (testData) {
         setFormInitialValue(testData);
+        setFormValues(testData);
         setQuestions(testData.questions || []);
       }
       setIsQuestionGenerationInProgress(false);
@@ -35,7 +36,7 @@ const TestCreation = () => {
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+  }, []);
 
   const handleGenerateQuestion = async (values: TestFormValues) => {
     setIsQuestionGenerationInProgress(true);
@@ -59,28 +60,36 @@ const TestCreation = () => {
     } catch (error: any) {
       console.error("Error parsing JSON:", error.message);
     } finally {
-      console.log("finally");
       setIsQuestionGenerationInProgress(false);
     }
   };
 
   const handleFormSubmission = async () => {
     setIsFormSubmissionInProgress(true);
-    const testCreationResponse = await createTest(formValues, testId);
+    console.log(formValues);
+    const testCreationResponse = await createOrUpdateTest(formValues, testId);
+    console.log(testCreationResponse);
     if (!testCreationResponse.success) {
       console.error("Failed to create/update test:", testCreationResponse.error);
       toast.error("Failed to create test");
     } else {
-      const uploadQuestionsReponse = await uploadQuestions(testCreationResponse?.testId, questions);
-      if (!uploadQuestionsReponse.success) {
-        console.error("Failed to upload questions:", uploadQuestionsReponse.error);
-        toast.error("Failed to upload questions");
-      } else {
-        toast.success("Test created/updated successfully!");
-        navigate("/recruiter/test-library");
-      }
+      callUploadQuestions(isUpdateMode ? testId : testCreationResponse?.testId);
     }
+
     setIsFormSubmissionInProgress(false);
+  };
+
+  const callUploadQuestions = async (testIdLocal: string | undefined) => {
+    const uploadQuestionsReponse = await uploadQuestions(testIdLocal, questions);
+    if (!uploadQuestionsReponse.success) {
+      console.error("Failed to upload questions:", uploadQuestionsReponse.error);
+      toast.error("Failed to upload questions");
+    } else {
+      toast.success(
+        `${formValues?.topic || "Test"} ${isUpdateMode ? "updated" : "created"} successfully!`,
+      );
+      navigate("/recruiter/test-library");
+    }
   };
 
   const updateQuestion = (updated: Question) => {

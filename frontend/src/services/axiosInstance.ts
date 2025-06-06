@@ -3,7 +3,6 @@ import { getUserDetails } from "./authService";
 import { logoutUser } from "./authService";
 
 const baseURL = process.env.REACT_APP_BACKEND_URL || "http://localhost:5000/api";
-console.log("API Base URL:", baseURL);
 
 const axiosInstance = axios.create({
   baseURL,
@@ -27,7 +26,7 @@ axiosInstance.interceptors.response.use(
       window.location.href = "/login";
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 axiosInstance.interceptors.request.use(

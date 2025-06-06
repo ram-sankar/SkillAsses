@@ -26,7 +26,7 @@ const difficultyLevels = ["Easy", "Medium", "Hard"];
 const questionTypes = [
   { text: "Text Answer", value: QuestionType.TEXT },
   { text: "Coding Problem", value: QuestionType.CODE },
-  { text: "Both", value: "both" },
+  { text: "Both", value: QuestionType.MIXED },
 ];
 
 const validationSchema = Yup.object({
@@ -57,7 +57,7 @@ const TestDetailsForm = ({ onSubmit, isLoading, initialValues }: TestDetailsForm
     if (initialValues) {
       formik.setValues(initialValues);
     }
-  }, [formik, initialValues]);
+  }, [initialValues]);
 
   return (
     <form onSubmit={formik.handleSubmit} noValidate className="test-form">
@@ -76,9 +76,20 @@ const TestDetailsForm = ({ onSubmit, isLoading, initialValues }: TestDetailsForm
 
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth required margin="normal" error={formik.touched.candidateLevel && Boolean(formik.errors.candidateLevel)}>
+          <FormControl
+            fullWidth
+            required
+            margin="normal"
+            error={formik.touched.candidateLevel && Boolean(formik.errors.candidateLevel)}
+          >
             <InputLabel>Candidate Level</InputLabel>
-            <Select name="candidateLevel" value={formik.values.candidateLevel} onChange={formik.handleChange} onBlur={formik.handleBlur} label="Candidate Level">
+            <Select
+              name="candidateLevel"
+              value={formik.values.candidateLevel}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              label="Candidate Level"
+            >
               {candidateLevels.map((level) => (
                 <MenuItem key={level} value={level}>
                   {level}
@@ -94,9 +105,20 @@ const TestDetailsForm = ({ onSubmit, isLoading, initialValues }: TestDetailsForm
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth required margin="normal" error={formik.touched.difficulty && Boolean(formik.errors.difficulty)}>
+          <FormControl
+            fullWidth
+            required
+            margin="normal"
+            error={formik.touched.difficulty && Boolean(formik.errors.difficulty)}
+          >
             <InputLabel>Difficulty</InputLabel>
-            <Select name="difficulty" value={formik.values.difficulty} onChange={formik.handleChange} onBlur={formik.handleBlur} label="Difficulty">
+            <Select
+              name="difficulty"
+              value={formik.values.difficulty}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              label="Difficulty"
+            >
               {difficultyLevels.map((level) => (
                 <MenuItem key={level} value={level}>
                   {level}
@@ -112,9 +134,20 @@ const TestDetailsForm = ({ onSubmit, isLoading, initialValues }: TestDetailsForm
         </Grid>
 
         <Grid item xs={12} sm={6}>
-          <FormControl fullWidth required margin="normal" error={formik.touched.questionType && Boolean(formik.errors.questionType)}>
+          <FormControl
+            fullWidth
+            required
+            margin="normal"
+            error={formik.touched.questionType && Boolean(formik.errors.questionType)}
+          >
             <InputLabel>Question Type</InputLabel>
-            <Select name="questionType" value={formik.values.questionType} onChange={formik.handleChange} onBlur={formik.handleBlur} label="Question Type">
+            <Select
+              name="questionType"
+              value={formik.values.questionType}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              label="Question Type"
+            >
               {questionTypes.map((questionType) => (
                 <MenuItem key={questionType.value} value={questionType.value}>
                   {questionType.text}
@@ -165,7 +198,13 @@ const TestDetailsForm = ({ onSubmit, isLoading, initialValues }: TestDetailsForm
       </Grid>
 
       <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
-        <Button type="reset" onClick={formik.handleReset} disabled={isLoading} color="secondary" outline={true.valueOf()}>
+        <Button
+          type="reset"
+          onClick={formik.handleReset}
+          disabled={isLoading}
+          color="secondary"
+          outline={true.valueOf()}
+        >
           Reset
         </Button>
         <Button type="submit" variant="contained" color="primary" disabled={isLoading}>
